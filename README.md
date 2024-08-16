@@ -10,6 +10,11 @@ pnpm dev
 bun dev
 ```
 
+# 使用技術
+* Next.js (v14) + tailwind CSSをベースとしています。
+* UI componentsとして、headless uiを利用しています。
+[headless ui](https://headlessui.com/)
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
