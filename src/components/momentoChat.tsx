@@ -1,19 +1,17 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { Field, Label, Select } from '@headlessui/react'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import clsx from 'clsx'
+import { Field, Label, Select } from '@headlessui/react';
+import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import clsx from 'clsx';
 import { subscribeToTopic } from "@/utis/momento-web";
 import { type TopicItem } from "@gomomento/sdk-web";
 
 export const MomentoChat = () => {
     const [chatList, setChats] = useState<string[]>([]);
-    const [latestChat, setLatestChat] = useState<string>("");
+    const [topicName, setTopicName] = useState<string>("Japanese");
 
     // Momentoキャッシュの名前
     const cacheName = "jpk2024-broadcast-viewer";
-    // topicNameは、チャットルームのようなもので今回だと各言語ごとに設定する
-    const topicName = "test";
 
     const onItem = (item: TopicItem) => {
         try {
@@ -21,21 +19,32 @@ export const MomentoChat = () => {
             if (message) {
                 setChats((curr) => [...curr, message]);
             }
-            setLatestChat(message); // 最新のメッセージを保存
         } catch (e) {
             console.error("unable to parse chat message", e);
         }
     };
 
     useEffect(() => {
-        subscribeToTopic(
-            cacheName,
-            topicName,
-            onItem,
-        )
-            .catch((e) => console.error("error subscribing to topic", e));
-    }, []);
+        const subscribe = async () => {
+            try {
+                await subscribeToTopic(cacheName, topicName, onItem);
+            } catch (e) {
+                console.error("error subscribing to topic", e);
+            }
+        };
+        
+        subscribe();
 
+        // Cleanup previous subscription on topic change
+        return () => {
+        // Unsubscribe logic can be added here if needed
+        };
+    }, [topicName]);
+
+    const handleTopicChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setTopicName(event.target.value);
+        setChats([]); // Clear chat history when changing topic
+    };
 
     return (
         <div className="grid grid-cols-5 p-4 m-0 text-center h-[250px] overflow-auto bg-gray-700 text-white">
@@ -51,6 +60,8 @@ export const MomentoChat = () => {
                                         'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25',
                                         '*:text-black'
                                     )}
+                                    onChange={handleTopicChange}
+                                    value={topicName} // Ensure the selected value is reflected
                                 >
                                     <option value="Japanese">Japanese</option>
                                     <option value="English">English</option>
@@ -67,7 +78,6 @@ export const MomentoChat = () => {
                 </div>
             </div>
             <div className="col-span-3 h-full w-full p-1 overflow-auto bg-white text-black rounded-md font-bold">
-                こんにちは。初めまして
                 <>
                     {chatList.map((chat, index) => (
                         <div
