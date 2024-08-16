@@ -34,12 +34,12 @@ export default function Home() {
           }}
         />
         <header className="text-center" />
-        <Image src="/jawspankration_main-image.png" alt="JAWS PANKRATION header" width={1440} height={230} />
+        <Image src="/jawspankration_main-image.png" alt="JAWS PANKRATION header" width={1440} height={120} />
         <div className="main">
           <video
             id="video-player"
-            width="1000"
-            height="500"
+            width="850"
+            height="450"
             controls
             playsInline
             autoPlay

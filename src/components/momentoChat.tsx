@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import { Description, Field, Label, Select } from '@headlessui/react'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import clsx from 'clsx'
 import { type ChatEvent, EventTypes, subscribeToTopic } from "@/utis/momento-web";
 import { type TopicItem, type TopicSubscribe } from "@gomomento/sdk-web";
 
@@ -47,59 +48,38 @@ export const MomentoChat = () => {
     }, [chats]);
 
     return (
-        <div className="flex flex-col items-center p-4 bg-gray-800 text-white">
-            <div className="mb-4">
-                <Menu as="div" className="relative inline-block text-left">
-                    <div>
-                        <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                            Options
-                            <ChevronDownIcon aria-hidden="true" className="-mr-1 h-5 w-5 text-gray-400" />
-                        </MenuButton>
-                    </div>
-
-                    <MenuItems
-                        transition
-                        className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-                    >
-                        <div className="py-1">
-                            <MenuItem>
-                                <a
-                                    href="#"
-                                    className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
+        <div className="grid grid-cols-5 p-4 m-0 text-center h-[250px] overflow-auto bg-gray-700 text-white">
+            <div className="col-span-1">
+                <div className="max-w-md px-4">
+                    <Field>
+                        <div className="flex flex-col items-center">
+                            <Label className="text-sm/6 font-medium text-white mb-1.5">Language</Label>
+                            <div className="relative w-1/2">
+                                <Select
+                                    className={clsx(
+                                        'block w-full appearance-none rounded-lg border-none bg-white/1 py-1.5 px-3 text-sm/6 text-black pr-10',
+                                        'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25',
+                                        '*:text-black'
+                                    )}
                                 >
-                                    Japanese
-                                </a>
-                            </MenuItem>
-                            <MenuItem>
-                                <a
-                                    href="#"
-                                    className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
-                                >
-                                    English
-                                </a>
-                            </MenuItem>
-                            <MenuItem>
-                                <a
-                                    href="#"
-                                    className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
-                                >
-                                    Chinese
-                                </a>
-                            </MenuItem>
-                            <form action="#" method="POST">
-                                <MenuItem>
-                                    <button
-                                        type="submit"
-                                        className="block w-full px-4 py-2 text-left text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900"
-                                    >
-                                        Korean
-                                    </button>
-                                </MenuItem>
-                            </form>
+                                    <option value="Japanese">Japanese</option>
+                                    <option value="English">English</option>
+                                    <option value="Chinese">Chinese</option>
+                                    <option value="Korean">Korean</option>
+                                </Select>
+                                <ChevronDownIcon
+                                    className="pointer-events-none absolute top-1/2 right-3 transform -translate-y-1/2 size-4 fill-black/60"
+                                    aria-hidden="true"
+                                />
+                            </div>
                         </div>
-                    </MenuItems>
-                </Menu>
+                    </Field>
+                </div>
             </div>
+            <div className="col-span-3 h-full w-full p-1 overflow-auto bg-white text-black rounded-md font-bold">
+                aaaa
+            </div>
+
 
             <div className="flex-grow overflow-y-auto w-full max-w-xl">
                 {chats.map((chat) => {
