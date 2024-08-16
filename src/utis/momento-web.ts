@@ -1,32 +1,22 @@
 import {
     Configurations,
     CredentialProvider,
-    MomentoErrorCode,
     TopicClient,
     type TopicItem,
-    TopicPublish,
     TopicSubscribe,
   } from "@gomomento/sdk-web";
   
   export enum EventTypes {
     MESSAGE = "message",
-    USER_JOINED = "user_joined",
   }
   
   export type ChatMessageEvent = {
     event: EventTypes.MESSAGE;
-    username: string;
     text: string;
     timestamp: number;
   };
   
-  export type UserJoinedEvent = {
-    event: EventTypes.USER_JOINED;
-    username: string;
-    timestamp: number;
-  };
-  
-  export type ChatEvent = UserJoinedEvent | ChatMessageEvent;
+  export type ChatEvent = ChatMessageEvent;
   
   const webTopicClient: TopicClient | undefined = undefined;
   let subscription: TopicSubscribe.Subscription | undefined = undefined;
@@ -67,12 +57,7 @@ async function getNewWebClients(): Promise<MomentoClients> {
     cacheName: string,
     topicName: string,
     onItem: (item: TopicItem) => void,
-    onError: (
-      error: TopicSubscribe.Error,
-      subscription: TopicSubscribe.Subscription,
-    ) => Promise<void>,
   ) {
-    onErrorCb = onError;
     onItemCb = onItem;
     const topicClient = await getWebTopicClient();
     const resp = await topicClient.subscribe(cacheName, topicName, {
@@ -85,20 +70,4 @@ async function getNewWebClients(): Promise<MomentoClients> {
     }
   
     throw new Error(`unable to subscribe to topic: ${resp}`);
-  }
-  
-  async function publish(cacheName: string, topicName: string, message: string) {
-    const topicClient = await getWebTopicClient();
-    const resp = await topicClient.publish(cacheName, topicName, message);
-    if (resp instanceof TopicPublish.Error) {
-      if (resp.errorCode() === MomentoErrorCode.AUTHENTICATION_ERROR) {
-        console.log(
-          "token has expired, going to refresh subscription and retry publish",
-        );
-        await subscribeToTopic(cacheName, topicName, onItemCb, onErrorCb);
-        await publish(cacheName, topicName, message);
-      } else {
-        console.error("failed to publish to topic", resp);
-      }
-    }
   }

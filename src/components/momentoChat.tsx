@@ -1,51 +1,41 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { Description, Field, Label, Select } from '@headlessui/react'
+import { Field, Label, Select } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
-import { type ChatEvent, EventTypes, subscribeToTopic } from "@/utis/momento-web";
-import { type TopicItem, type TopicSubscribe } from "@gomomento/sdk-web";
+import { subscribeToTopic } from "@/utis/momento-web";
+import { type TopicItem } from "@gomomento/sdk-web";
 
 export const MomentoChat = () => {
-    const [chats, setChats] = useState<ChatEvent[]>([]);
-    const messagesEndRef = useRef<HTMLDivElement | null>(null);
+    const [chatList, setChats] = useState<string[]>([]);
+    const [latestChat, setLatestChat] = useState<string>("");
 
+    // Momentoキャッシュの名前
     const cacheName = "jpk2024-broadcast-viewer";
+    // topicNameは、チャットルームのようなもので今回だと各言語ごとに設定する
     const topicName = "test";
 
     const onItem = (item: TopicItem) => {
         try {
-            const message = JSON.parse(item.valueString()) as ChatEvent;
-            setChats((curr) => [...curr, message]);
+            const message = item.valueString();
+            if (message) {
+                setChats((curr) => [...curr, message]);
+            }
+            setLatestChat(message); // 最新のメッセージを保存
         } catch (e) {
             console.error("unable to parse chat message", e);
         }
     };
 
-    const onError = async (
-        error: TopicSubscribe.Error,
-        sub: TopicSubscribe.Subscription,
-    ) => {
-        console.error(
-            "received error from momento, getting new token and resubscribing",
-            error,
-        );
-        sub.unsubscribe();
-        await subscribeToTopic(
+    useEffect(() => {
+        subscribeToTopic(
             cacheName,
             topicName,
             onItem,
-            onError
-        );
-    };
+        )
+            .catch((e) => console.error("error subscribing to topic", e));
+    }, []);
 
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    };
-
-    useEffect(() => {
-        scrollToBottom();
-    }, [chats]);
 
     return (
         <div className="grid grid-cols-5 p-4 m-0 text-center h-[250px] overflow-auto bg-gray-700 text-white">
@@ -77,32 +67,18 @@ export const MomentoChat = () => {
                 </div>
             </div>
             <div className="col-span-3 h-full w-full p-1 overflow-auto bg-white text-black rounded-md font-bold">
-                aaaa
-            </div>
-
-
-            <div className="flex-grow overflow-y-auto w-full max-w-xl">
-                {chats.map((chat) => {
-                    const date = new Date(chat.timestamp);
-                    const hours = date.getHours();
-                    const minutes = date.getMinutes();
-                    switch (chat.event) {
-                        case EventTypes.MESSAGE:
-                            const timestampWithUsername = `[${hours}:${minutes}] <${chat.username}>`;
-                            return (
-                                <div
-                                    className="break-words"
-                                    key={`${chat.timestamp}-${chat.username}`}
-                                >
-                                    <span className="text-red-500">
-                                        {timestampWithUsername}
-                                    </span>{" "}
-                                    {chat.text}
-                                </div>
-                            );
+                こんにちは。初めまして
+                <>
+                    {chatList.map((chat, index) => (
+                        <div
+                            className="break-words"
+                            key={`${index}`}
+                        >
+                            {chat}
+                        </div>
+                    ))
                     }
-                })}
-                <div ref={messagesEndRef} />
+                </>
             </div>
         </div>
     );
