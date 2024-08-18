@@ -11,7 +11,7 @@ export const IvsChat = () => {
   const [messages, setMessages] = useState<string[]>([]);
 
   useEffect(() => {
-    const chatClientToken =env.IVS_CHAT_CLIENT_TOKEN;
+    const chatClientToken = env.IVS_CHAT_CLIENT_TOKEN;
     const socketUrl = "wss://edge.ivschat.ap-northeast-1.amazonaws.com";
     const connection = new WebSocket(socketUrl, chatClientToken);
 

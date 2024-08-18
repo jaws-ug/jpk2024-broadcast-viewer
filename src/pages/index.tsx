@@ -2,10 +2,12 @@ import Head from "next/head";
 import Image from "next/image";
 import Script from "next/script";
 import videojs from "video.js";
-import { IvsChat } from "@/components/IvsChat";
+//import { IvsChat } from "@/components/IvsChat";
 //import { MomentoChat } from "@/components/momentoChat";
 import "video.js/dist/video-js.css";
 import { registerIVSQualityPlugin, registerIVSTech } from "amazon-ivs-player";
+
+import { IvsChatTest } from "@/components/ivsChatTest";
 
 export default function Home() {
   return (
@@ -59,7 +61,7 @@ export default function Home() {
           ></video>
         </div>
       </div>
-      <IvsChat />
+      <IvsChatTest />
     </>
   );
 }
