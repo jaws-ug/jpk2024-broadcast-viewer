@@ -7,7 +7,6 @@ import { env } from "process";
 import { join } from "path";
 
 export const IvsChatTest = () => {
-  const [isLoading, setLoading] = useState<boolean>(false);
   const [chatClientToken, setClientToken] = useState<boolean>(false);
   const [connection, setConnection] = useState<WebSocket | null>(null);
   const [chatList, setChats] = useState<string[]>([]);
@@ -83,11 +82,8 @@ export const IvsChatTest = () => {
   };
 
   useEffect(() => {
-    if (!isLoading) {
-      setLoading(true);
-      requestChatToken();
-    }
-  }, [isLoading, requestChatToken]);
+    requestChatToken();
+  }, []);
 
   return (
     <div className="grid grid-cols-5 p-4 m-0 text-center h-[250px] overflow-auto bg-gray-700 text-white">
