@@ -1,11 +1,13 @@
-import Head from 'next/head';
-import Image from 'next/image';
-import Script from 'next/script';
-import videojs from 'video.js';
-// import { IvsChat } from '@/components/IvsChat';
-import { MomentoChat } from '@/components/momentoChat';
-import 'video.js/dist/video-js.css';
-import { registerIVSQualityPlugin, registerIVSTech } from 'amazon-ivs-player';
+import Head from "next/head";
+import Image from "next/image";
+import Script from "next/script";
+import videojs from "video.js";
+import { IvsChat } from "@/components/IvsChat";
+//import { MomentoChat } from "@/components/momentoChat";
+import "video.js/dist/video-js.css";
+import { registerIVSQualityPlugin, registerIVSTech } from "amazon-ivs-player";
+
+import { IvsChatTest } from "@/components/ivsChatTest";
 
 export default function Home() {
   return (
@@ -21,20 +23,32 @@ export default function Home() {
           src="https://player.live-video.net/1.5.0/amazon-ivs-player.min.js"
           strategy="afterInteractive"
           onLoad={() => {
-            registerIVSTech(videojs, { wasmWorker: "./amazon-ivs-wasmworker.min.js", wasmBinary: "./amazon-ivs-wasmworker.min.wasm" });
+            registerIVSTech(videojs, {
+              wasmWorker: "./amazon-ivs-wasmworker.min.js",
+              wasmBinary: "./amazon-ivs-wasmworker.min.wasm",
+            });
             registerIVSQualityPlugin(videojs);
 
-            const player = videojs("video-player", {
-              techOrder: ["AmazonIVS"],
-            }, () => {
-              console.log("Player is ready to use!");
-              (player as any).enableIVSQualityPlugin();
-              player.src(process.env.NEXT_PUBLIC_IVS_STREAM_URL as string);
-            });
+            const player = videojs(
+              "video-player",
+              {
+                techOrder: ["AmazonIVS"],
+              },
+              () => {
+                console.log("Player is ready to use!");
+                (player as any).enableIVSQualityPlugin();
+                player.src(process.env.NEXT_PUBLIC_IVS_STREAM_URL as string);
+              },
+            );
           }}
         />
         <header className="text-center" />
-        <Image src="/jawspankration_main-image.png" alt="JAWS PANKRATION header" width={1440} height={120} />
+        <Image
+          src="/jawspankration_main-image.png"
+          alt="JAWS PANKRATION header"
+          width={1440}
+          height={120}
+        />
         <div className="main">
           <video
             id="video-player"
@@ -43,11 +57,11 @@ export default function Home() {
             controls
             playsInline
             autoPlay
-            className="video-js vjs-big-play-centered"
+            className="video-js vjs-big-play-centered" //vjs-fill
           ></video>
         </div>
       </div>
-      <MomentoChat />
+      <IvsChat />
     </>
   );
 }

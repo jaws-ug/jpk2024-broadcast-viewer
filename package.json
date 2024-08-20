@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "fix": "prettier --write src"
   },
   "dependencies": {
     "@gomomento/sdk-web": "^1.94.0",
@@ -33,6 +34,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "postcss": "^8",
+    "prettier": "^3.3.3",
     "tailwindcss": "^3.4.1",
     "tsx": "^4.17.0",
     "typescript": "^5.5.4"
