@@ -80,7 +80,7 @@ export const IvsChat = () => {
     if (connection) {
       connection.close();
     }
-    
+
     requestChatToken(arn);
     setArnName(name);
     setClientToken("");
@@ -90,7 +90,6 @@ export const IvsChat = () => {
 
 
   useEffect(() => {
-    const chatClientToken = env.IVS_CHAT_CLIENT_TOKEN;
     const socketUrl = "wss://edge.ivschat.ap-northeast-1.amazonaws.com";
     const connection = new WebSocket(socketUrl, chatClientToken);
 
@@ -98,7 +97,9 @@ export const IvsChat = () => {
     requestChatToken("arn:aws:ivschat:ap-northeast-1:590183817826:room/j0Bpz9gSqfZQ");
 
     return () => {
-      connection.close();
+      if (connection) {
+        connection.close();
+      }
     };
   }, []);
 
