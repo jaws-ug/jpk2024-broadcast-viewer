@@ -8,41 +8,93 @@ import { XIcon } from "@heroicons/react/solid";
 
 export const IvsChat = () => {
   const [chatList, setChats] = useState<string[]>([]);
+  const [connection, setConnection] = useState<WebSocket | null>(null);
+  const [chatClientToken, setClientToken] = useState<string>("");
   const [topicName, setTopicName] = useState<string>("Japanese");
-  const [messages, setMessages] = useState<string[]>([]);
 
   let [isOpen, setIsOpen] = useState(true)
 
-  function open() {
+  const open = () => {
     setIsOpen(true)
   }
 
-  function close() {
+  const close = () => {
     setIsOpen(false)
   }
+
+  const joinChatRoom = (chatClientToken: string) => {
+    const socketUrl = "wss://edge.ivschat.ap-northeast-1.amazonaws.com";
+    const connection = new WebSocket(socketUrl, chatClientToken);
+    setConnection(connection);
+
+    connection.onopen = () => {
+      console.log("Connected to chat server");
+    };
+
+    connection.onclose = () => {
+      console.log("Disconnected from chat server");
+    };
+
+    connection.onerror = (error) => {
+      console.error("Chat server error", error);
+    };
+
+    connection.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log({ data });
+      console.log(data.Attributes.text);
+      setChats((prevMessages) => [...prevMessages, data.Attributes.text]);
+    };
+  };
+
+  const requestChatToken = async () => {
+    console.log("fetch start");
+    try {
+      const response = await fetch(
+        "https://8w6r5rzr2a.execute-api.ap-northeast-1.amazonaws.com/prod/createChatToken",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            roomIdentifier:
+              "arn:aws:ivschat:ap-northeast-1:590183817826:room/j0Bpz9gSqfZQ", // required
+            userId: "jaws-pankration", // required
+          }),
+        },
+      );
+      console.log("fetch done");
+      const data = await response.json();
+      console.log({ data });
+      console.log(data.token);
+      setClientToken(data.token);
+      joinChatRoom(data.token);
+      return data.token;
+    } catch (error) {
+      console.error("Error requesting chat token", error);
+    }
+  };
+
+  const handleTopicChange = (language: string) => {
+    setTopicName(language);
+    setChats([]); // Clear chat history when changing topic
+  };
+
 
   useEffect(() => {
     const chatClientToken = env.IVS_CHAT_CLIENT_TOKEN;
     const socketUrl = "wss://edge.ivschat.ap-northeast-1.amazonaws.com";
     const connection = new WebSocket(socketUrl, chatClientToken);
 
-    connection.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      setMessages((prevMessages) => [...prevMessages, data.Content]);
-    };
-
-    setChats(["翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト"])
-    setIsOpen(false)
+    setIsOpen(false);
+    requestChatToken();
 
     return () => {
       connection.close();
     };
   }, []);
 
-  const handleTopicChange = (language: string) => {
-    setTopicName(language);
-    setChats([]); // Clear chat history when changing topic
-  };
 
   return (
     <div className="px-4 m-0 w-full max-w-lg sm:max-w-xl lg:max-w-2xl h-[450px] sm:h-[500px] lg:h-[550px] overflow-auto text-center text-white">
