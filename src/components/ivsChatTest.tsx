@@ -3,66 +3,78 @@ import { useState, useEffect, useCallback } from "react";
 import { Field, Label, Select } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
+import { env } from "process";
+import { join } from "path";
 
 export const IvsChatTest = () => {
-  const [chatClientToken, setClientToken] = useState<string>("");
+  const [chatClientToken, setClientToken] = useState<boolean>(false);
   const [connection, setConnection] = useState<WebSocket | null>(null);
   const [chatList, setChats] = useState<string[]>([]);
   const [topicName, setTopicName] = useState<string>("Japanese");
+  const [messages, setMessages] = useState<string[]>([]);
 
-  const joinChatRoom = (chatClientToken: string) => {
-    const socketUrl = "wss://edge.ivschat.ap-northeast-1.amazonaws.com";
-    const connection = new WebSocket(socketUrl, chatClientToken);
-    setConnection(connection);
+  const [testMessages, setTestMessages] = useState<string>("");
 
-    connection.onopen = () => {
-      console.log("Connected to chat server");
+  const sendMessage = (message: string) => {
+    const payload = {
+      Action: "SEND_MESSAGE",
+      RequestId: "Japanese",
+      Content: "text message",
+      Attributes: {
+        CustomMetadata: "test metadata",
+      },
     };
-
-    connection.onclose = () => {
-      console.log("Disconnected from chat server");
-    };
-
-    connection.onerror = (error) => {
-      console.error("Chat server error", error);
-    };
-
-    connection.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      console.log({ data });
-      console.log(data.Attributes.text);
-      setChats((prevMessages) => [...prevMessages, data.Attributes.text]);
-    };
+    if (connection) {
+      connection.send(JSON.stringify(payload));
+      setTestMessages(""); // Clear the input field
+    }
   };
 
-  const requestChatToken = async () => {
-    console.log("fetch start");
+  const joinChatRoom = useCallback(
+    (chatClientToken: string) => {
+      const socketUrl = process.env.socketUrl || "";
+      const connection = new WebSocket(socketUrl, chatClientToken);
+      setConnection(connection);
+
+      connection.onopen = () => {
+        console.log("Connected to chat server");
+      };
+
+      connection.onclose = () => {
+        console.log("Disconnected from chat server");
+      };
+
+      connection.onerror = (error) => {
+        console.error("Chat server error", error);
+      };
+
+      connection.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        setMessages((prevMessages) => [...prevMessages, data.Content]);
+      };
+    },
+    [setConnection, setMessages],
+  );
+
+  const requestChatToken = useCallback(async () => {
     try {
-      const response = await fetch(
-        "https://8w6r5rzr2a.execute-api.ap-northeast-1.amazonaws.com/prod/createChatToken",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            roomIdentifier:
-              "arn:aws:ivschat:ap-northeast-1:590183817826:room/j0Bpz9gSqfZQ", // required
-            userId: "jaws-pankration", // required
-          }),
+      const response = await fetch(process.env.IVS_CHAT_TOKEN_URL || "", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
-      console.log("fetch done");
+        body: JSON.stringify({
+          ChannelARN: process.env.IVS_CHANNEL_ARN,
+        }),
+      });
       const data = await response.json();
-      console.log({ data });
-      console.log(data.token);
-      setClientToken(data.token);
-      joinChatRoom(data.token);
-      return data.token;
+      setClientToken(data.Token);
+      joinChatRoom(data.Token);
+      return data.Token;
     } catch (error) {
       console.error("Error requesting chat token", error);
     }
-  };
+  }, [joinChatRoom, setClientToken]);
 
   const handleTopicChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setTopicName(event.target.value);
@@ -114,6 +126,19 @@ export const IvsChatTest = () => {
             </div>
           ))}
         </>
+      </div>
+      <div className="col-span-8 h-full w-full p-1 overflow-auto bg-white text-black rounded-md font-bold">
+        This is a test chat
+        <form className="flex flex-col items-center">
+          <input
+            type="text"
+            value={testMessages}
+            onChange={(e) => setTestMessages(e.target.value)}
+          ></input>
+          <button onClick={() => sendMessage(testMessages)}>
+            Send TestMessage
+          </button>
+        </form>
       </div>
     </div>
   );
