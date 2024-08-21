@@ -78,6 +78,7 @@ export const IvsChat = () => {
   const handleLanguageChange = (name: string, arn: string) => {
     requestChatToken(arn);
     setArnName(name);
+    setClientToken("");
     setChats([]); // Clear chat history when changing topic
   };
 
