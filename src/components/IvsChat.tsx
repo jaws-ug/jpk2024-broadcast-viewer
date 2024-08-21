@@ -79,6 +79,7 @@ export const IvsChat = () => {
     requestChatToken(arn);
     setArnName(name);
     setClientToken("");
+    setConnection(null);
     setChats([]); // Clear chat history when changing topic
   };
 
