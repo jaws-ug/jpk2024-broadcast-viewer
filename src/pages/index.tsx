@@ -3,16 +3,13 @@ import Image from "next/image";
 import Script from "next/script";
 import videojs from "video.js";
 import { IvsChat } from "@/components/IvsChat";
-//import { MomentoChat } from "@/components/momentoChat";
 import "video.js/dist/video-js.css";
 import { registerIVSQualityPlugin, registerIVSTech } from "amazon-ivs-player";
-
-import { IvsChatTest } from "@/components/ivsChatTest";
 
 export default function Home() {
   return (
     <>
-      <div className="bg-gray-900">
+      <div className="bg-gray-800 h-full min-h-screen flex flex-col items-center">
         <Head>
           <title>JAWS PANKRATION 2024</title>
           <meta name="description" content="JAWS PANKRATION 2024" />
@@ -42,26 +39,36 @@ export default function Home() {
             );
           }}
         />
-        <header className="text-center" />
-        <Image
-          src="/jawspankration_main-image.png"
-          alt="JAWS PANKRATION header"
-          width={1440}
-          height={120}
-        />
-        <div className="main">
-          <video
-            id="video-player"
-            width="850"
-            height="450"
-            controls
-            playsInline
-            autoPlay
-            className="video-js vjs-big-play-centered" //vjs-fill
-          ></video>
+
+        <header className="text-center w-full" />
+
+        <div className="w-full max-w-6xl px-4">
+          <Image
+            src="/jawspankration_main-image.png"
+            alt="JAWS PANKRATION header"
+            width={1440}
+            height={120}
+            className="w-full h-auto"
+          />
+        </div>
+
+        <div className="grid grid-cols-5 my-12">
+          <div className="main w-full max-w-4xl col-span-3 px-2 sm:px-4">
+            <video
+              id="video-player"
+              controls
+              playsInline
+              width="850"
+              height="500"
+              autoPlay
+              className="video-js vjs-big-play-centered"
+            ></video>
+          </div>
+          <div className="col-span-2">
+            <IvsChat />
+          </div>
         </div>
       </div>
-      <IvsChat />
     </>
   );
 }

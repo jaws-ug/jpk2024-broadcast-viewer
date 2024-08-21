@@ -1,14 +1,25 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Field, Label, Select } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import clsx from "clsx";
+import { Button, Dialog, DialogPanel, DialogTitle, RadioGroup } from '@headlessui/react';
 import { env } from "process";
+import { ivsChatRoomList } from "@/utis/ivs-chat-roomlist";
+// @ts-ignore
+import { XIcon } from "@heroicons/react/solid";
 
 export const IvsChat = () => {
   const [chatList, setChats] = useState<string[]>([]);
   const [topicName, setTopicName] = useState<string>("Japanese");
   const [messages, setMessages] = useState<string[]>([]);
+
+  let [isOpen, setIsOpen] = useState(true)
+
+  function open() {
+    setIsOpen(true)
+  }
+
+  function close() {
+    setIsOpen(false)
+  }
 
   useEffect(() => {
     const chatClientToken = env.IVS_CHAT_CLIENT_TOKEN;
@@ -20,50 +31,68 @@ export const IvsChat = () => {
       setMessages((prevMessages) => [...prevMessages, data.Content]);
     };
 
+    setChats(["翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト翻訳テスト"])
+    setIsOpen(false)
+
     return () => {
       connection.close();
     };
   }, []);
 
-  const handleTopicChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setTopicName(event.target.value);
+  const handleTopicChange = (language: string) => {
+    setTopicName(language);
     setChats([]); // Clear chat history when changing topic
   };
 
   return (
-    <div className="grid grid-cols-5 p-4 m-0 text-center h-[250px] overflow-auto bg-gray-700 text-white">
-      <div className="col-span-1">
-        <div className="max-w-md px-4">
-          <Field>
-            <div className="flex flex-col items-center">
-              <Label className="text-sm/6 font-medium text-white mb-1.5">
-                Language
-              </Label>
-              <div className="relative w-1/2">
-                <Select
-                  className={clsx(
-                    "block w-full appearance-none rounded-lg border-none bg-white/1 py-1.5 px-3 text-sm/6 text-black pr-10",
-                    "focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25",
-                    "*:text-black",
-                  )}
-                  onChange={handleTopicChange}
-                  value={topicName} // Ensure the selected value is reflected
+    <div className="px-4 m-0 w-full max-w-lg sm:max-w-xl lg:max-w-2xl h-[450px] sm:h-[500px] lg:h-[550px] overflow-auto text-center text-white">
+      <Button
+        onClick={open}
+        className="mb-3 rounded-md bg-green-300 py-2 px-4 text-sm font-bold text-green-800 focus:outline-none data-[hover]:bg-green-500 data-[focus]:outline-1 data-[focus]:outline-white"
+      >
+        Language Select
+      </Button>
+
+      <Dialog open={isOpen} as="div" className="relative z-10 focus:outline-none" onClose={close}>
+      <div className="fixed inset-0 z-10 w-screen h-screen bg-black bg-opacity-50">
+        <div className="flex h-full items-center justify-center">
+          <DialogPanel
+            transition
+            className="relative w-full max-w-5xl max-h-[90vh] bg-white/10 p-12 backdrop-blur-2xl duration-300 ease-out overflow-y-auto rounded-lg"
+          >
+            {/* 閉じるボタン */}
+            <button
+              onClick={close}
+              className="absolute top-4 right-4 text-white hover:text-gray-300"
+            >
+              <XIcon className="h-6 w-6" />
+            </button>
+
+            {/* タイトル */}
+            <DialogTitle as="h3" className="col-span-3 text-2xl font-medium text-white text-center mb-12">
+              Please select the language you want to display.
+            </DialogTitle>
+
+            {/* ボタンリスト */}
+            <div className="grid grid-cols-3 gap-8">
+              {ivsChatRoomList.map((language) => (
+                <button
+                  key={language.name}
+                  onClick={() => handleTopicChange(language.name)}
+                  className={`flex items-center justify-center w-full px-4 py-2 rounded-lg text-lg
+                    ${language.name === topicName ? 'bg-blue-500 text-white' : 'bg-white text-black'}
+                  `}
                 >
-                  <option value="Japanese">Japanese</option>
-                  <option value="English">English</option>
-                  <option value="Chinese">Chinese</option>
-                  <option value="Korean">Korean</option>
-                </Select>
-                <ChevronDownIcon
-                  className="pointer-events-none absolute top-1/2 right-3 transform -translate-y-1/2 size-4 fill-black/60"
-                  aria-hidden="true"
-                />
-              </div>
+                  {language.name}
+                </button>
+              ))}
             </div>
-          </Field>
+          </DialogPanel>
         </div>
       </div>
-      <div className="col-span-3 h-full w-full p-1 overflow-auto bg-white text-black rounded-md font-bold">
+    </Dialog>
+
+      <div className="w-full text-center p-1 overflow-auto bg-white text-black rounded-md font-bold h-full">
         <>
           {chatList.map((chat, index) => (
             <div className="break-words" key={`${index}`}>
