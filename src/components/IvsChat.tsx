@@ -3,8 +3,7 @@ import { useState, useEffect } from "react";
 import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { env } from "process";
 import { ivsChatRoomList } from "@/utis/ivs-chat-roomlist";
-// @ts-ignore
-import { XIcon } from "@heroicons/react/solid";
+import { XMarkIcon } from '@heroicons/react/24/solid';
 
 export const IvsChat = () => {
   const [chatList, setChats] = useState<string[]>([]);
@@ -117,7 +116,7 @@ export const IvsChat = () => {
               onClick={close}
               className="absolute top-4 right-4 text-white hover:text-gray-300"
             >
-              <XIcon className="h-6 w-6" />
+              <XMarkIcon className="h-6 w-6" />
             </button>
 
             {/* タイトル */}
