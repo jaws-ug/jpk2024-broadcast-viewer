@@ -76,6 +76,11 @@ export const IvsChat = () => {
   };
 
   const handleLanguageChange = (name: string, arn: string) => {
+
+    if (connection) {
+      connection.close();
+    }
+    
     requestChatToken(arn);
     setArnName(name);
     setClientToken("");
