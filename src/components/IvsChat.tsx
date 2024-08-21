@@ -9,7 +9,7 @@ export const IvsChat = () => {
   const [chatList, setChats] = useState<string[]>([]);
   const [connection, setConnection] = useState<WebSocket | null>(null);
   const [chatClientToken, setClientToken] = useState<string>("");
-  const [topicName, setTopicName] = useState<string>("Japanese");
+  const [arnName, setArnName] = useState<string>("Japanese");
 
   let [isOpen, setIsOpen] = useState(true)
 
@@ -46,7 +46,7 @@ export const IvsChat = () => {
     };
   };
 
-  const requestChatToken = async () => {
+  const requestChatToken = async (arn: string) => {
     console.log("fetch start");
     try {
       const response = await fetch(
@@ -58,7 +58,7 @@ export const IvsChat = () => {
           },
           body: JSON.stringify({
             roomIdentifier:
-              "arn:aws:ivschat:ap-northeast-1:590183817826:room/j0Bpz9gSqfZQ", // required
+              arn, // required
             userId: "jaws-pankration", // required
           }),
         },
@@ -75,8 +75,9 @@ export const IvsChat = () => {
     }
   };
 
-  const handleTopicChange = (language: string) => {
-    setTopicName(language);
+  const handleLanguageChange = (name: string, arn: string) => {
+    requestChatToken(arn);
+    setArnName(name);
     setChats([]); // Clear chat history when changing topic
   };
 
@@ -87,7 +88,7 @@ export const IvsChat = () => {
     const connection = new WebSocket(socketUrl, chatClientToken);
 
     setIsOpen(false);
-    requestChatToken();
+    requestChatToken("arn:aws:ivschat:ap-northeast-1:590183817826:room/j0Bpz9gSqfZQ");
 
     return () => {
       connection.close();
@@ -129,9 +130,9 @@ export const IvsChat = () => {
               {ivsChatRoomList.map((language) => (
                 <button
                   key={language.name}
-                  onClick={() => handleTopicChange(language.name)}
+                  onClick={() => handleLanguageChange(language.name, language.arn)}
                   className={`flex items-center justify-center w-full px-4 py-2 rounded-lg text-lg
-                    ${language.name === topicName ? 'bg-blue-500 text-white' : 'bg-white text-black'}
+                    ${language.name === arnName ? 'bg-blue-500 text-white' : 'bg-white text-black'}
                   `}
                 >
                   {language.name}
