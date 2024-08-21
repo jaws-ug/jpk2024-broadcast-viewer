@@ -11,29 +11,29 @@ export const IvsChatTest = () => {
   const [topicName, setTopicName] = useState<string>("Japanese");
 
   const joinChatRoom = (chatClientToken: string) => {
-      const socketUrl = 'wss://edge.ivschat.ap-northeast-1.amazonaws.com';
-      const connection = new WebSocket(socketUrl, chatClientToken);
-      setConnection(connection);
+    const socketUrl = "wss://edge.ivschat.ap-northeast-1.amazonaws.com";
+    const connection = new WebSocket(socketUrl, chatClientToken);
+    setConnection(connection);
 
-      connection.onopen = () => {
-        console.log("Connected to chat server");
-      };
-
-      connection.onclose = () => {
-        console.log("Disconnected from chat server");
-      };
-
-      connection.onerror = (error) => {
-        console.error("Chat server error", error);
-      };
-
-      connection.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        console.log({data})
-        console.log(data.Attributes.text)
-        setChats((prevMessages) => [...prevMessages, data.Attributes.text]);
-      };
+    connection.onopen = () => {
+      console.log("Connected to chat server");
     };
+
+    connection.onclose = () => {
+      console.log("Disconnected from chat server");
+    };
+
+    connection.onerror = (error) => {
+      console.error("Chat server error", error);
+    };
+
+    connection.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      console.log({ data });
+      console.log(data.Attributes.text);
+      setChats((prevMessages) => [...prevMessages, data.Attributes.text]);
+    };
+  };
 
   const requestChatToken = async () => {
     console.log("fetch start");
@@ -54,7 +54,7 @@ export const IvsChatTest = () => {
       );
       console.log("fetch done");
       const data = await response.json();
-      console.log({data});
+      console.log({ data });
       console.log(data.token);
       setClientToken(data.token);
       joinChatRoom(data.token);
@@ -70,7 +70,7 @@ export const IvsChatTest = () => {
   };
 
   useEffect(() => {
-      requestChatToken();
+    requestChatToken();
   }, []);
 
   return (
