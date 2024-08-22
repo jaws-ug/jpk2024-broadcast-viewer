@@ -111,7 +111,7 @@ export const IvsChat = () => {
         </Button>
       </div>
 
-      <div className="px-4 m-0 w-full sm:max-w-xl lg:max-w-2xl h-[450px] sm:h-[500px] lg:h-[550px] overflow-auto text-center text-white">
+      <div className="px-4 m-0 w-full h-[450px] sm:h-[500px] lg:h-[550px] overflow-auto text-center text-white">
 
         <Dialog open={isOpen} as="div" className="relative z-10 focus:outline-none" onClose={close}>
           <div className="fixed inset-0 z-10 w-screen h-screen bg-black bg-opacity-50">
