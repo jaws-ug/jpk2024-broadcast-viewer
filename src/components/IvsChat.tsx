@@ -5,7 +5,7 @@ import { ivsChatRoomList } from "@/utis/ivs-chat-roomlist";
 import { XMarkIcon } from '@heroicons/react/24/solid';
 
 export const IvsChat = () => {
-  const [chatList, setChats] = useState<string[]>([]);
+  const [chatList, setChats] = useState<string[]>(["esrdtfyguhijhguyftdrsdtfyghjnhgfcdxcfgvhbjn"]);
   const [connection, setConnection] = useState<WebSocket>();
   const [chatClientToken, setClientToken] = useState<string>("");
   const [arnName, setArnName] = useState<string>("Japanese");
@@ -105,7 +105,7 @@ export const IvsChat = () => {
       <div className="flex justify-center items-center mb-3">
         <Button
           onClick={open}
-          className="text-center rounded-md bg-green-300 py-2 px-4 text-sm font-bold text-green-800 focus:outline-none data-[hover]:bg-green-500 data-[focus]:outline-1 data-[focus]:outline-white"
+          className="text-center rounded-md bg-orange-500 py-2 px-4 text-sm font-bold text-white focus:outline-none data-[hover]:bg-orange-600 data-[focus]:outline-1 data-[focus]:outline-white"
         >
           Language Select
         </Button>
@@ -151,7 +151,7 @@ export const IvsChat = () => {
           </div>
         </Dialog>
 
-        <div className="w-full text-center p-1 overflow-auto bg-white text-black rounded-md font-bold h-full">
+        <div className="w-full text-center p-5 overflow-auto bg-white/20 bg-opacity-20 text-white rounded-md font-bold h-full">
           <>
             {chatList.map((chat, index) => (
               <div className="break-words" key={`${index}`}>
