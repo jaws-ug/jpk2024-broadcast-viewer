@@ -42,3 +42,18 @@ a {
   height: 1em;
   margin-left: 0.5rem;
 }
+
+@keyframes spin-and-fade {
+  0% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(360deg);
+  }
+}
+
+.animate-spin-and-fade {
+  animation: spin-and-fade 1.5s ease-in-out forwards;
+}
