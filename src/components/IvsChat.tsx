@@ -1,30 +1,35 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
+import { Button, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { ivsChatRoomList } from "@/utis/ivs-chat-roomlist";
-import { XMarkIcon } from '@heroicons/react/24/solid';
-import { useTimer } from 'react-timer-hook';
+import { XMarkIcon } from "@heroicons/react/24/solid";
+import { useTimer } from "react-timer-hook";
 import exp from "constants";
 
 export const IvsChat = () => {
   const [chatList, setChats] = useState<string[]>([""]);
-  const [isFirstTime,setIsFirstTime] = useState<boolean>(true);
-  const [connection, setConnection] = useState<WebSocket|null>(null);
+  const [isFirstTime, setIsFirstTime] = useState<boolean>(true);
+  const [connection, setConnection] = useState<WebSocket | null>(null);
   const [chatClientToken, setClientToken] = useState<string>("");
   const [arnName, setArnName] = useState<string>("Japanese");
-  const [arn, setArn] = useState<string>("arn:aws:ivschat:ap-northeast-1:590183817826:room/RfWlo5LhpnZM");
+  const [arn, setArn] = useState<string>(
+    "arn:aws:ivschat:ap-northeast-1:590183817826:room/RfWlo5LhpnZM",
+  );
   const expiryTimestamp = new Date();
-  const {restart} = useTimer({ expiryTimestamp, onExpire: () => handleLanguageChange(arnName,arn) });
+  const { restart } = useTimer({
+    expiryTimestamp,
+    onExpire: () => handleLanguageChange(arnName, arn),
+  });
 
-  let [isOpen, setIsOpen] = useState(true)
+  let [isOpen, setIsOpen] = useState(true);
 
   const open = () => {
-    setIsOpen(true)
-  }
+    setIsOpen(true);
+  };
 
   const close = () => {
-    setIsOpen(false)
-  }
+    setIsOpen(false);
+  };
 
   const joinChatRoom = (chatClientToken: string) => {
     const socketUrl = "wss://edge.ivschat.ap-northeast-1.amazonaws.com";
@@ -62,8 +67,7 @@ export const IvsChat = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            roomIdentifier:
-            arn, // required
+            roomIdentifier: arn, // required
             userId: "jaws-pankration", // required
           }),
         },
@@ -72,15 +76,13 @@ export const IvsChat = () => {
         setClientToken(data.token);
         joinChatRoom(data.token);
         return data.token;
-      })
-
+      });
     } catch (error) {
       console.error("Error requesting chat token", error);
     }
   };
 
   const handleLanguageChange = (name: string, arn: string) => {
-
     if (connection) {
       connection.close();
       setClientToken("");
@@ -94,10 +96,9 @@ export const IvsChat = () => {
     setChats([]);
   };
 
-
   useEffect(() => {
-    if (isFirstTime){
-      handleLanguageChange(arnName,arn);
+    if (isFirstTime) {
+      handleLanguageChange(arnName, arn);
       setIsFirstTime(false);
     }
     setIsOpen(false);
@@ -115,8 +116,12 @@ export const IvsChat = () => {
       </div>
 
       <div className="px-4 m-0 w-full h-[450px] sm:h-[500px] lg:h-[550px] overflow-auto text-center text-white">
-
-        <Dialog open={isOpen} as="div" className="relative z-10 focus:outline-none" onClose={close}>
+        <Dialog
+          open={isOpen}
+          as="div"
+          className="relative z-10 focus:outline-none"
+          onClose={close}
+        >
           <div className="fixed inset-0 z-10 w-screen h-screen bg-black bg-opacity-50">
             <div className="flex h-full items-center justify-center">
               <DialogPanel
@@ -132,7 +137,10 @@ export const IvsChat = () => {
                 </button>
 
                 {/* タイトル */}
-                <DialogTitle as="h3" className="col-span-3 text-2xl font-medium text-white text-center mb-12">
+                <DialogTitle
+                  as="h3"
+                  className="col-span-3 text-2xl font-medium text-white text-center mb-12"
+                >
                   Please select the language you want to display.
                 </DialogTitle>
 
@@ -141,9 +149,11 @@ export const IvsChat = () => {
                   {ivsChatRoomList.map((language) => (
                     <button
                       key={language.name}
-                      onClick={() => handleLanguageChange(language.name, language.arn)}
+                      onClick={() =>
+                        handleLanguageChange(language.name, language.arn)
+                      }
                       className={`flex items-center justify-center w-full px-4 py-2 rounded-lg text-lg
-          ${language.name === arnName ? 'bg-blue-500 text-white' : 'bg-white text-black'}`}
+          ${language.name === arnName ? "bg-blue-500 text-white" : "bg-white text-black"}`}
                     >
                       {language.name}
                     </button>
