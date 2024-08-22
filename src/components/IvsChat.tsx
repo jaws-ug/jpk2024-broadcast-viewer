@@ -5,7 +5,7 @@ import { ivsChatRoomList } from "@/utis/ivs-chat-roomlist";
 import { XMarkIcon } from '@heroicons/react/24/solid';
 
 export const IvsChat = () => {
-  const [chatList, setChats] = useState<string[]>(["esrdtfyguhijhguyftdrsdtfyghjnhgfcdxcfgvhbjn"]);
+  const [chatList, setChats] = useState<string[]>([""]);
   const [connection, setConnection] = useState<WebSocket>();
   const [chatClientToken, setClientToken] = useState<string>("");
   const [arnName, setArnName] = useState<string>("Japanese");
