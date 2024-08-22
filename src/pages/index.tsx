@@ -47,7 +47,6 @@ export default function Home() {
           },
         },
         () => {
-          console.log("Player is ready to use!");
           (player as any).enableIVSQualityPlugin();
           player.src(process.env.NEXT_PUBLIC_IVS_STREAM_URL as string);
         }

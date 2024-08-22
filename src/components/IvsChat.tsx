@@ -3,12 +3,18 @@ import { useState, useEffect } from "react";
 import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { ivsChatRoomList } from "@/utis/ivs-chat-roomlist";
 import { XMarkIcon } from '@heroicons/react/24/solid';
+import { useTimer } from 'react-timer-hook';
+import exp from "constants";
 
 export const IvsChat = () => {
   const [chatList, setChats] = useState<string[]>([""]);
-  const [connection, setConnection] = useState<WebSocket>();
+  const [isFirstTime,setIsFirstTime] = useState<boolean>(true);
+  const [connection, setConnection] = useState<WebSocket|null>(null);
   const [chatClientToken, setClientToken] = useState<string>("");
   const [arnName, setArnName] = useState<string>("Japanese");
+  const [arn, setArn] = useState<string>("arn:aws:ivschat:ap-northeast-1:590183817826:room/RfWlo5LhpnZM");
+  const expiryTimestamp = new Date();
+  const {restart} = useTimer({ expiryTimestamp, onExpire: () => handleLanguageChange(arnName,arn) });
 
   let [isOpen, setIsOpen] = useState(true)
 
@@ -26,6 +32,9 @@ export const IvsChat = () => {
     setConnection(connections);
 
     connections.onopen = () => {
+      expiryTimestamp.setMinutes(expiryTimestamp.getMinutes() + 160);
+      restart(expiryTimestamp);
+      console.log("update token" + expiryTimestamp);
       console.log("Connected to chat server");
     };
 
@@ -44,7 +53,6 @@ export const IvsChat = () => {
   };
 
   const requestChatToken = async (arn: string) => {
-    console.log("fetch start");
     try {
       const response = await fetch(
         "https://8w6r5rzr2a.execute-api.ap-northeast-1.amazonaws.com/prod/createChatToken",
@@ -55,12 +63,11 @@ export const IvsChat = () => {
           },
           body: JSON.stringify({
             roomIdentifier:
-              arn, // required
+            arn, // required
             userId: "jaws-pankration", // required
           }),
         },
       );
-      console.log("fetch done");
       await response.json().then((data) => {
         setClientToken(data.token);
         joinChatRoom(data.token);
@@ -83,22 +90,18 @@ export const IvsChat = () => {
 
     requestChatToken(arn);
     setArnName(name);
+    setArn(arn);
     setChats([]);
   };
 
 
   useEffect(() => {
-    setIsOpen(false);
-    if (chatClientToken) {
-      joinChatRoom(chatClientToken);
+    if (isFirstTime){
+      handleLanguageChange(arnName,arn);
+      setIsFirstTime(false);
     }
-    return () => {
-      if (connection) {
-        connection.close();
-      }
-    };
+    setIsOpen(false);
   }, [chatClientToken]);
-
 
   return (
     <>
