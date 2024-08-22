@@ -134,14 +134,13 @@ export const IvsChat = () => {
                 </DialogTitle>
 
                 {/* ボタンリスト */}
-                <div className="grid grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   {ivsChatRoomList.map((language) => (
                     <button
                       key={language.name}
                       onClick={() => handleLanguageChange(language.name, language.arn)}
                       className={`flex items-center justify-center w-full px-4 py-2 rounded-lg text-lg
-                    ${language.name === arnName ? 'bg-blue-500 text-white' : 'bg-white text-black'}
-                  `}
+          ${language.name === arnName ? 'bg-blue-500 text-white' : 'bg-white text-black'}`}
                     >
                       {language.name}
                     </button>
