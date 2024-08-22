@@ -9,7 +9,9 @@ import { registerIVSQualityPlugin, registerIVSTech } from "amazon-ivs-player";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
-  const [randomImage, setRandomImage] = useState<string>("/e-kishikawa_2024_1.png");
+  const [randomImage, setRandomImage] = useState<string>(
+    "/e-kishikawa_2024_1.png",
+  );
 
   useEffect(() => {
     const images = [
@@ -49,7 +51,7 @@ export default function Home() {
         () => {
           (player as any).enableIVSQualityPlugin();
           player.src(process.env.NEXT_PUBLIC_IVS_STREAM_URL as string);
-        }
+        },
       );
 
       return () => {
