@@ -30,6 +30,13 @@ export default function Home() {
               "video-player",
               {
                 techOrder: ["AmazonIVS"],
+                fluid: true, // これを追加
+                breakpoints: {
+                  small: 200,
+                  medium: 576,
+                  large: 992,
+                  xlarge: 1440
+                }
               },
               () => {
                 console.log("Player is ready to use!");
@@ -52,19 +59,17 @@ export default function Home() {
           />
         </div>
 
-        <div className="grid grid-cols-5 my-12">
-          <div className="main w-full max-w-4xl col-span-3 px-2 sm:px-4">
+        <div className="w-full flex flex-col lg:grid lg:grid-cols-5 my-12">
+          <div className="main w-full max-w-4xl lg:col-span-3 px-2 sm:px-4">
             <video
               id="video-player"
               controls
               playsInline
-              width="850"
-              height="500"
               autoPlay
-              className="video-js vjs-big-play-centered"
+              className="video-js vjs-big-play-centered w-full h-full"
             ></video>
           </div>
-          <div className="col-span-2">
+          <div className="w-full lg:col-span-2 mt-8 lg:mt-0">
             <IvsChat />
           </div>
         </div>
