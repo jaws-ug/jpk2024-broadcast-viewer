@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { ivsChatRoomList } from "@/utis/ivs-chat-roomlist";
 import { XMarkIcon } from "@heroicons/react/24/solid";
@@ -20,6 +20,7 @@ export const IvsChat = () => {
     expiryTimestamp,
     onExpire: () => handleLanguageChange(arnName, arn),
   });
+  const scrollBottomRef = useRef<HTMLDivElement>(null);
 
   let [isOpen, setIsOpen] = useState(true);
 
@@ -54,6 +55,10 @@ export const IvsChat = () => {
     connections.onmessage = (event) => {
       const data = JSON.parse(event.data);
       setChats((prevMessages) => [...prevMessages, data.Attributes.text]);
+      scrollBottomRef?.current?.scrollIntoView({
+        block: "end",
+        behavior: "smooth",
+      });
     };
   };
 
@@ -167,7 +172,11 @@ export const IvsChat = () => {
         <div className="w-full text-center p-5 overflow-auto bg-white/20 bg-opacity-20 text-white rounded-md font-bold h-full">
           <>
             {chatList.map((chat, index) => (
-              <div className="break-words" key={`${index}`}>
+              <div
+                className="break-words"
+                key={`${index}`}
+                ref={scrollBottomRef}
+              >
                 {chat}
               </div>
             ))}
