@@ -31,6 +31,10 @@ export const IvsChat = () => {
     setIsOpen(false);
   };
 
+  const cacheClear = () => {
+    setChats([""]);
+  };
+
   const joinChatRoom = (chatClientToken: string) => {
     const socketUrl = "wss://edge.ivschat.ap-northeast-1.amazonaws.com";
     const connections = new WebSocket(socketUrl, chatClientToken);
@@ -109,12 +113,18 @@ export const IvsChat = () => {
 
   return (
     <>
-      <div className="flex justify-center items-center mb-3">
+      <div className="flex justify-center items-center mb-3 space-x-4">
         <Button
           onClick={open}
-          className="text-center rounded-md bg-orange-500 py-2 px-4 text-sm font-bold text-white focus:outline-none data-[hover]:bg-orange-600 data-[focus]:outline-1 data-[focus]:outline-white"
+          className="rounded-md bg-orange-500 py-2 px-4 text-sm font-bold text-white focus:outline-none data-[hover]:bg-orange-600 data-[focus]:outline-1 data-[focus]:outline-white"
         >
           Language Select
+        </Button>
+        <Button
+          onClick={cacheClear}
+          className="rounded-md bg-sky-400 py-2 px-4 text-sm font-bold text-white focus:outline-none data-[hover]:bg-sky-600 data-[focus]:outline-1 data-[focus]:outline-white"
+        >
+          Cache Clear
         </Button>
       </div>
 
