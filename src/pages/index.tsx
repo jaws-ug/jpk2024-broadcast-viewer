@@ -51,6 +51,16 @@ export default function Home() {
         () => {
           (player as any).enableIVSQualityPlugin();
           player.src(process.env.NEXT_PUBLIC_IVS_STREAM_URL as string);
+          player.on('loadedmetadata', () => {
+            // @ts-ignore
+            const qualities = player.getIVSPlayer().getQualities();
+            // @ts-ignore
+            const quality480p = qualities.find(quality => quality.height === 480);
+            if (quality480p) {
+            // @ts-ignore
+              player.getIVSPlayer().setQuality(quality480p);
+            }
+          });
         },
       );
 
