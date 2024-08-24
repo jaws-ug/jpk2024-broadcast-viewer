@@ -4,7 +4,6 @@ import { Button, Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { ivsChatRoomList } from "@/utis/ivs-chat-roomlist";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { useTimer } from "react-timer-hook";
-import exp from "constants";
 
 export const IvsChat = () => {
   const [chatList, setChats] = useState<string[]>([""]);
@@ -168,7 +167,7 @@ export const IvsChat = () => {
           </div>
         </Dialog>
 
-        <div className="w-full text-center p-5 overflow-auto bg-white/20 bg-opacity-20 text-white rounded-md font-bold h-full">
+        <div className="w-full text-center p-5 overflow-auto bg-white/20 bg-opacity-20 text-white rounded-md font-bold xl:h-full lg:h-full sm:h-1/2">
           <>
             {chatList.map((chat, index) => (
               <div

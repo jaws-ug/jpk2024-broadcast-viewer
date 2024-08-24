@@ -100,7 +100,7 @@ export default function Home() {
               />
             </div>
 
-            <div className="w-full flex flex-col lg:grid lg:grid-cols-5 my-12">
+            <div className="w-full flex flex-col lg:grid lg:grid-cols-5 lg:my-12">
               <div className="main w-full lg:col-span-3 px-2 sm:px-4">
                 <video
                   id="video-player"
