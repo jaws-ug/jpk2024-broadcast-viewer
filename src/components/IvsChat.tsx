@@ -58,12 +58,18 @@ export const IvsChat = () => {
     connections.onmessage = (event) => {
       const data = JSON.parse(event.data);
       setChats((prevMessages) => [...prevMessages, data.Attributes.text]);
-      scrollBottomRef?.current?.scrollIntoView({
+    };
+  };
+
+  useEffect(() => {
+    // chatListが更新された時に自動でスクロール
+    if (scrollBottomRef.current) {
+      scrollBottomRef.current.scrollIntoView({
         block: "end",
         behavior: "smooth",
       });
-    };
-  };
+    }
+  }, [chatList]); // chatListが更新されるたびに実行
 
   const requestChatToken = async (arn: string) => {
     try {
@@ -183,7 +189,7 @@ export const IvsChat = () => {
               <div
                 className="break-words"
                 key={`${index}`}
-                ref={scrollBottomRef}
+                ref={index === chatList.length - 1 ? scrollBottomRef : null}
               >
                 {chat}
               </div>
